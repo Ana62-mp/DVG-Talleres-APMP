@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
         float speedAnimation = Mathf.Abs(move);
         animator.SetFloat("Speed", speedAnimation);
 
-        rd.velocity = new Vector2(move * speed, rd.velocity.y);
+        rd.linearVelocity = new Vector2(move * speed, rd.linearVelocity.y);
 
        
         if(move > 0 && !facinRight)
