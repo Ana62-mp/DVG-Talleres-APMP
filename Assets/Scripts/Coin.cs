@@ -1,0 +1,15 @@
+using UnityEngine;
+
+public class Coin : MonoBehaviour
+{
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Verifica que quien tocó la moneda sea el jugador
+        if (collision.CompareTag("Player"))
+        {
+            CoinUI.Instance.AddCoin();
+
+            Destroy(gameObject);
+        }
+    }
+}

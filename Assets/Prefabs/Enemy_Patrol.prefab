@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e06e424838d82124ea1703a2dc5dc12f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPatrol
-  speed: 4
+  speed: 1
   groundCheck: {fileID: 7069824021760078423}
   distanceToGround: 1.5
   distanceToWall: 1.5
