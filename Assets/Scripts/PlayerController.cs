@@ -10,12 +10,14 @@ public class PlayerController : MonoBehaviour
     private bool facinRight = true;
 
     private bool isGrounded;
+    private PlayerHealth playerHealth;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rd = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        playerHealth = GetComponent<PlayerHealth>();
 
     }
 
@@ -23,28 +25,42 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         float move = Input.GetAxis("Horizontal");
-        
+
+        // Mientras recibe el empujón,
+        // las teclas NO controlan el Rigidbody
+        if (playerHealth.IsKnockback)
+        {
+            animator.SetFloat("Speed", 0);
+            return;
+        }
+
         float speedAnimation = Mathf.Abs(move);
         animator.SetFloat("Speed", speedAnimation);
 
-        rd.linearVelocity = new Vector2(move * speed, rd.linearVelocity.y);
+        rd.linearVelocity = new Vector2(
+            move * speed,
+            rd.linearVelocity.y
+        );
 
-       
-        if(move > 0 && !facinRight)
+        if (move > 0 && !facinRight)
         {
             Flip();
-        }else if(move < 0 && facinRight)
+        }
+        else if (move < 0 && facinRight)
         {
             Flip();
         }
 
-        //salto
-
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        // Salto
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rd.AddForce(Vector2.up * jumForce, ForceMode2D.Impulse);
+            rd.AddForce(
+                Vector2.up * jumForce,
+                ForceMode2D.Impulse
+            );
+
             isGrounded = false;
-            animator.SetBool("isJump",true);
+            animator.SetBool("isJump", true);
         }
     }
 
