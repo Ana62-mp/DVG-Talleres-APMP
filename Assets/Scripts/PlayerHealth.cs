@@ -1,6 +1,4 @@
 using UnityEngine;
-
-using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
@@ -34,18 +32,23 @@ public class PlayerHealth : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy") && !isInvulnerable)
         {
-            TakeDamage(collision.transform);
+            RecibirDanio(collision.transform);
         }
     }
 
-    void TakeDamage(Transform enemy)
+    public void RecibirDanio(Transform enemy)
     {
+        if (isInvulnerable) return;
+
         lives--;
 
         Debug.Log("Vidas restantes: " + lives);
 
         // Animación de daño
-        animator.SetTrigger("Hurt1");
+        if (animator != null)
+        {
+            animator.SetTrigger("Hurt1");
+        }
 
         if (lives <= 0)
         {
@@ -53,7 +56,7 @@ public class PlayerHealth : MonoBehaviour
             return;
         }
 
-        // Dirección contraria al enemigo
+        // Dirección contraria al enemigo o trampa
         float direction;
 
         if (transform.position.x < enemy.position.x)
@@ -90,7 +93,7 @@ public class PlayerHealth : MonoBehaviour
 
         IsKnockback = false;
 
-        // Sigue siendo invulnerable hasta completar 1 segundo
+        // Sigue siendo invulnerable hasta completar el tiempo
         yield return new WaitForSeconds(
             invulnerabilityTime - knockbackTime
         );
