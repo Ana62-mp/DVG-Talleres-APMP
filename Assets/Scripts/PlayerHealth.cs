@@ -42,6 +42,18 @@ public class PlayerHealth : MonoBehaviour
 
         lives--;
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ReproducirSfx(
+                AudioManager.Instance.sonidoHurt
+            );
+        }
+
+        if (CameraShake.Instance != null)
+        {
+            CameraShake.Instance.Sacudir(0.2f, 0.2f);
+        }
+
         Debug.Log("Vidas restantes: " + lives);
 
         // Animación de daño

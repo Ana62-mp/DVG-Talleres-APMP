@@ -2,26 +2,30 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
     private Rigidbody2D rd;
-    public float speed = 5f; // es 5 float, lo convierte a decimal
+
+    public float speed = 5f;
     public float jumForce = 7f;
+
     private Animator animator;
     private bool facinRight = true;
 
     private bool isGrounded;
     private PlayerHealth playerHealth;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Header("Estado del jugador")]
+    public bool puedeMoverse = true;
+
+    [Header("Efectos visuales")]
+    public GameObject polvoSaltoPrefabs;
+
     void Start()
     {
         rd = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         playerHealth = GetComponent<PlayerHealth>();
-
     }
 
-    // Update is called once per frame
     void Update()
     {
         float move = Input.GetAxis("Horizontal");
@@ -30,6 +34,14 @@ public class PlayerController : MonoBehaviour
         // las teclas NO controlan el Rigidbody
         if (playerHealth.IsKnockback)
         {
+            animator.SetFloat("Speed", 0);
+            return;
+        }
+
+        // Si no puede moverse, detenemos el movimiento horizontal
+        if (!puedeMoverse)
+        {
+            rd.linearVelocity = new Vector2(0, rd.linearVelocity.y);
             animator.SetFloat("Speed", 0);
             return;
         }
@@ -52,7 +64,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Salto
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && puedeMoverse)
         {
             rd.AddForce(
                 Vector2.up * jumForce,
@@ -61,6 +73,22 @@ public class PlayerController : MonoBehaviour
 
             isGrounded = false;
             animator.SetBool("isJump", true);
+
+            if (polvoSaltoPrefabs != null)
+            {
+                Instantiate(
+                    polvoSaltoPrefabs,
+                    transform.position,
+                    Quaternion.identity
+                );
+            }
+
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.ReproducirSfx(
+                    AudioManager.Instance.sonidoSalto
+                );
+            }
         }
     }
 
@@ -84,8 +112,10 @@ public class PlayerController : MonoBehaviour
     void Flip()
     {
         facinRight = !facinRight;
+
         Vector3 scale = transform.localScale;
         scale.x *= -1;
+
         transform.localScale = scale;
     }
 }
