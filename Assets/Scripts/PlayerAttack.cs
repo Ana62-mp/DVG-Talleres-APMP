@@ -25,6 +25,7 @@ public class PlayerAttack : MonoBehaviour
                     AudioManager.Instance.sonidoGolpe
                 );
             }
+
             Attack();
         }
     }
@@ -44,11 +45,20 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
+            // Daño a enemigos normales
             EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
 
             if (enemyHealth != null)
             {
                 enemyHealth.TakeDamage(attackDamage);
+            }
+
+            // Daño al Boss
+            BossController boss = enemy.GetComponent<BossController>();
+
+            if (boss != null)
+            {
+                boss.TakeDamage(attackDamage);
             }
         }
     }
@@ -58,6 +68,9 @@ public class PlayerAttack : MonoBehaviour
         if (attackPoint == null) return;
 
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        Gizmos.DrawWireSphere(
+            attackPoint.position,
+            attackRange
+        );
     }
 }
